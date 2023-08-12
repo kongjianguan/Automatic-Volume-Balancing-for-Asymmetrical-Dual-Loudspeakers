@@ -1,6 +1,6 @@
 id=Automatic_balancing_of_Dual_Loudspeakers
 name=非对称双扬音量平衡(识别蓝牙耳机)
-version=v1.1
-versionCode=2
+version=v2
+versionCode=3
 author=酷安@Theneworder
-description=专为双扬音量不平衡的机型制作，可以在无蓝牙耳机连接时，自动调整音量平衡。仅限Android11及以上机型。
+description=专为双扬音量不平衡的机型制作，可以在无耳机连接时，自动调整音量平衡。仅限Android11+机型。

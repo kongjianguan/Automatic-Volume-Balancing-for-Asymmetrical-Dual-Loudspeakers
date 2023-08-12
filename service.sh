@@ -17,9 +17,9 @@ while true; do
    pgrep -f ${MODDIR}/ab.sh
    if [ $? -ne 0 ]; then
         chmod 777 ${MODDIR}/ab.sh
-        "${MODDIR}/ab.sh"
+        sh "${MODDIR}/ab.sh"
    fi
-   sleep 120 # 每两分钟检查一次
+   sleep 60 # 每两分钟检查一次
 done
 
 
