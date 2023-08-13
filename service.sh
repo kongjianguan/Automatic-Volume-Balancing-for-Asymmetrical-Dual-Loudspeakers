@@ -19,7 +19,7 @@ while true; do
         chmod 777 ${MODDIR}/ab.sh
         sh "${MODDIR}/ab.sh"
    fi
-   sleep 60 # 每两分钟检查一次
+   sleep 10 # 每两分钟检查一次
 done
 
 
