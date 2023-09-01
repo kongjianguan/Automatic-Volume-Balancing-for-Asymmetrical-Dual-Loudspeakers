@@ -44,6 +44,13 @@ function check(){
     else
         echo "蓝牙耳机三类未连接"
     fi
+    dumpsys audio | grep "Devices: remote_submix" -i
+    if [ $? == 0 ]; then
+        echo "远程音频已连接"
+        return 0
+    else 
+        echo "远程音频未连接"
+    fi
     return 1
 }
 
