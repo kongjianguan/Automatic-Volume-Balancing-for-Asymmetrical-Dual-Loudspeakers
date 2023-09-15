@@ -51,6 +51,13 @@ function check(){
     else 
         echo "远程音频未连接"
     fi
+    dumpsys audio | grep "Devices: ble_headset" -i
+    if [ $? == 0 ]; then
+        echo "蓝牙耳机四类已连接(LC3)"
+        return 0
+    else
+        echo "蓝牙耳机四未连接"
+    fi
     return 1
 }
 
