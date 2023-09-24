@@ -2,56 +2,57 @@ function mycat(){
     echo $(awk -F"$1" '{print $2}' "$MODCONF")
 }
 function check(){
-    dumpsys audio | grep "Devices: bt_a2dp" -i
+    dumplog=$( dumpsys audio | grep "Devices:")
+    echo dumplog | grep "Devices: bt_a2dp" -i
     if [ $? == 0 ]; then
         echo "蓝牙耳机一类已连接"
         return 0
     else
         echo "蓝牙耳机一类未连接"
     fi
-    dumpsys audio | grep "Devices: headphone" -i
+    echo dumplog | grep "Devices: headphone" -i
     if [ $? == 0 ]; then
         echo "有线耳机一类已连接"
         return 0
     else
         echo "有线耳机一类未连接"
     fi
-    dumpsys audio | grep "Devices: headset" -i
+    echo dumplog | grep "Devices: headset" -i
     if [ $? == 0 ]; then
         echo "有线耳机二类已连接"
         return 0
     else
         echo "有线耳机二类未连接"
     fi
-    dumpsys audio | grep "Devices: usb_headset" -i
+    echo dumplog | grep "Devices: usb_headset" -i
     if [ $? == 0 ]; then
         echo "USB耳机已连接"
         return 0
     else
         echo "USB耳机未连接"
     fi
-    dumpsys audio | grep "Devices: bt_a2dp_hp" -i
+    echo dumplog | grep "Devices: bt_a2dp_hp" -i
     if [ $? == 0 ]; then
         echo "蓝牙耳机二类已连接"
         return 0
     else
         echo "蓝牙耳机二类未连接"
     fi
-    dumpsys audio | grep "Devices: bt_sco_hs" -i
+    echo dumplog | grep "Devices: bt_sco_hs" -i
     if [ $? == 0 ]; then
         echo "蓝牙耳机三类已连接"
         return 0
     else
         echo "蓝牙耳机三类未连接"
     fi
-    dumpsys audio | grep "Devices: remote_submix" -i
+    echo dumplog | grep "Devices: remote_submix" -i
     if [ $? == 0 ]; then
         echo "远程音频已连接"
         return 0
     else 
         echo "远程音频未连接"
     fi
-    dumpsys audio | grep "Devices: ble_headset" -i
+    echo dumplog | grep "Devices: ble_headset" -i
     if [ $? == 0 ]; then
         echo "蓝牙耳机四类已连接(LC3)"
         return 0
@@ -85,5 +86,5 @@ do
         settings put system master_balance $volume_offset
     fi
     echo "Now the volume_offset = "$(settings get system master_balance)
-    sleep 2
+    sleep 3
 done
