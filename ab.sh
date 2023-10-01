@@ -31,8 +31,9 @@ function check() {
             echo "${ep[i]}未连接"
         fi
     done
-
+    
     return 1
+
 }
 
 temp=0.0
