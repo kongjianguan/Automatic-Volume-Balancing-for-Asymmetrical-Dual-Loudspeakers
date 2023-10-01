@@ -1,65 +1,39 @@
 function mycat(){
     echo $(awk -F"$1" '{print $2}' "$MODCONF")
 }
-function check(){
-    dumplog=$( dumpsys audio | grep "Devices:")
-    echo $dumplog | grep "Devices: bt_a2dp" -i
-    if [ $? == 0 ]; then
-        echo "蓝牙耳机一类已连接"
-        return 0
-    else
-        echo "蓝牙耳机一类未连接"
-    fi
-    echo $dumplog | grep "Devices: headphone" -i
-    if [ $? == 0 ]; then
-        echo "有线耳机一类已连接"
-        return 0
-    else
-        echo "有线耳机一类未连接"
-    fi
-    echo $dumplog | grep "Devices: headset" -i
-    if [ $? == 0 ]; then
-        echo "有线耳机二类已连接"
-        return 0
-    else
-        echo "有线耳机二类未连接"
-    fi
-    echo $dumplog | grep "Devices: usb_headset" -i
-    if [ $? == 0 ]; then
-        echo "USB耳机已连接"
-        return 0
-    else
-        echo "USB耳机未连接"
-    fi
-    echo $dumplog | grep "Devices: bt_a2dp_hp" -i
-    if [ $? == 0 ]; then
-        echo "蓝牙耳机二类已连接"
-        return 0
-    else
-        echo "蓝牙耳机二类未连接"
-    fi
-    echo $dumplog | grep "Devices: bt_sco_hs" -i
-    if [ $? == 0 ]; then
-        echo "蓝牙耳机三类已连接"
-        return 0
-    else
-        echo "蓝牙耳机三类未连接"
-    fi
-    echo $dumplog | grep "Devices: remote_submix" -i
-    if [ $? == 0 ]; then
-        echo "远程音频已连接"
-        return 0
-    else 
-        echo "远程音频未连接"
-    fi
-    echo $dumplog | grep "Devices: ble_headset" -i
-    if [ $? == 0 ]; then
-        echo "蓝牙耳机四类已连接(LC3)"
-        return 0
-    else
-        echo "蓝牙耳机四未连接"
-    fi
+
+function check() {
+    dumplog=$(dumpsys audio | grep "Devices:")
+
+    dev=("bt_a2dp"
+    "headphone"
+    "headset"
+    "usb_headset"
+    "bt_a2dp_hp"
+    "bt_sco_hs"
+    "remote_submix"
+    "ble_headset")
+
+    ep=("蓝牙耳机一类"
+    "有线耳机一类"
+    "有线耳机二类"
+    "USB耳机"
+    "蓝牙耳机二类"
+    "蓝牙耳机三类"
+    "远程音频"
+    "蓝牙耳机四类(LC3)")
+
+    for i in "${!dev[@]}"; do
+        if echo "$dumplog" | grep -i "Devices: ${dev[i]}" >/dev/null; then
+            echo "${ep[i]}已连接"
+            return 0
+        else
+            echo "${ep[i]}未连接"
+        fi
+    done
+    
     return 1
+
 }
 
 temp=0.0
