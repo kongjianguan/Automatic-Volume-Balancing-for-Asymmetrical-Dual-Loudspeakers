@@ -8,7 +8,7 @@ MODCONF="/data/${MODNAME}.conf"
 until [ -d "/sdcard/Android" ]; do
     sleep 1
 done
-echo $(date)启动
+echo $(date)启动 >./log.txt
 if [ ! -f ${MODCONF} ]; then
     echo "volume_offset=0.0">"/data/${MODNAME}.conf"
     chmod 755 $MODCONF
@@ -42,8 +42,6 @@ function check() {
          if echo "$dumplog" | grep -i "Devices: ${dev[i]}" >/dev/null; then 
              echo "${ep[i]}已连接" 
              return 0 
-         else 
-             echo "${ep[i]}未连接" 
          fi 
      done 
   
@@ -58,10 +56,11 @@ fi
 while true;
 do
     check
-    setenforce 0
     if [ $? == 0 ]; then
+        setenforce 0
         settings put system master_balance 0.0
     elif [ $? == 1 ]; then
+        setenforce 0
         temp=$(settings get system master_balance)
         if [ $temp != 0.0 ]; then
             volume_offset=$temp
@@ -70,8 +69,8 @@ do
         fi
         echo "volume_offset="$volume_offset > ${MODCONF}
         settings put system master_balance $volume_offset
+        echo "Now the volume_offset = "$volume_offset
     fi
-    echo "Now the volume_offset = "$(settings get system master_balance)
     setenforce 1
     sleep 5
 done
