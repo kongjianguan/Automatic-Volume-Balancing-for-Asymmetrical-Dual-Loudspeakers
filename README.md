@@ -15,19 +15,19 @@ After the module is brushed in, you only need to adjust the parameters of the vo
 ## 按顺序来
 
 终端输入
-
-`su`
-`ps -elf | grep Automatic_balancing_of_Dual_Loudspeakers`
-
+'''
+su
+ps -elf | grep Automatic_balancing_of_Dual_Loudspeakers
+'''
 若为空则模块未运行，可以考虑手动启动
-
-`sh /data/adb/modules/Automatic_balancing_of_Dual_Loudspeakers/service.sh > /dev/null 2>&1 &`
-
+'''
+sh /data/adb/modules/Automatic_balancing_of_Dual_Loudspeakers/service.sh > /dev/null 2>&1 &
+'''
 终端输入
-
-`su`
-`echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
-
+'''
+su
+echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
+'''
 若无值则未读取到偏移值，可能原因为
 1. setlinux限制无法读取
 2. 模块未运行
