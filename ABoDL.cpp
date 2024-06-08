@@ -1,19 +1,43 @@
-# 请不要硬编码/magisk/modname/...;相反，请使用$MODDIR/...
-# 这将使您的脚本兼容，即使Magisk以后改变挂载点
-MODDIR=${0%/*}
-
-# 该脚本将在设备开机后作为延迟服务启动
-MODNAME="Automatic_balancing_of_Dual_Loudspeakers"
-MODCONF="/data/${MODNAME}.conf"
-until [ -d "/sdcard/Android" ]; do
-    sleep 1
-done
-echo $(date)启动
-if [ ! -f ${MODCONF} ]; then
-    echo "volume_offset=0.0">"/data/${MODNAME}.conf"
-    chmod 755 $MODCONF
-fi
-chmod -R 755 .
+#include<unistd.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<limits.h>
+#include<string>
+using namespace std;
+#define MODNAME "Automatic_balancing_of_Dual_Loudspeakers"
+FILE* MODCONF =fopen("/data/Automatic_balancing_of_Dual_Loudspeakers.conf","r+");
+char* temp=malloc(100*sizeof(char));
+string offset;
+inline string& mycat(){
+    if(access("/data/Automatic_balancing_of_Dual_Loudspeakers.conf",F_OK)){
+        return "error";   
+    }
+    fgets(temp,100,MODCONF);
+    int i,l=i=strlen(temp);
+    while(temp[i--]!='=' || i){}
+    i+=2;
+    if(i>=(l-1)){
+        return NULL;
+    }
+    l=0;
+    while(temp[i]){
+        offest[l]=temp[i];
+        ++l;
+        ++i;
+    }
+    return offset;
+    //已完整，待测试
+}
+check
+int main(){
+    char* MODDIR=realpath("./",MODDIR);
+    while(true){
+        if(mycat()==NULL) continue;
+        
+        //printf("%s\n",MODDIR);
+    }
+}
+/*
 function mycat(){
     echo $(awk -F"$1" '{print $2}' "$MODCONF")
 }
@@ -51,14 +75,16 @@ function check() {
   }
 
 temp=0.0
+MODNAME="Automatic_balancing_of_Dual_Loudspeakers"
+MODCONF="/data/${MODNAME}.conf"
 if [ -f ${MODCONF} ];then
 volume_offset=$(mycat "volume_offset=")
 else volume_offset=0.0
 fi
+
 while true;
 do
     check
-    setenforce 0
     if [ $? == 0 ]; then
         settings put system master_balance 0.0
     elif [ $? == 1 ]; then
@@ -72,6 +98,6 @@ do
         settings put system master_balance $volume_offset
     fi
     echo "Now the volume_offset = "$(settings get system master_balance)
-    setenforce 1
-    sleep 5
+    sleep 3
 done
+*/
