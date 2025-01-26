@@ -39,3 +39,7 @@ echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 # 悲报
 
 目前发现Magsik和kernelSU的busybox不支持某些语法(想知道的自己测试)，一律手动启动吧。至于如何手动，想必读者读到这里已心中有数，我也不一一赘述了。不会的就期待有缘人pull吧(●￣(ｴ)￣●)。
+
+# 展望
+
+正在尝试用cpp重构，降低开销，不过还没想好一些细节就被迫背上学业的大山，因此期待有缘人完善一下cpp实现（有没有效果尚未可知）。
