@@ -43,3 +43,11 @@ echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 # 展望
 
 正在尝试用cpp重构，降低开销，不过还没想好一些细节就被迫背上学业的大山，因此期待有缘人完善一下cpp实现（有没有效果尚未可知）。
+
+目前cpp实现已可以正常运行，好处有
+
+1.无需手动，可以被busybox正常启动
+
+2.开销更低
+
+由于实现尚不完善，因此不发布release，想使用cpp实现的，可自行下载。
