@@ -1,103 +1,108 @@
-#include<unistd.h>
-#include<stdio.h>
-#include<stdlib.h>
-#include<limits.h>
-#include<string>
-using namespace std;
-#define MODNAME "Automatic_balancing_of_Dual_Loudspeakers"
-FILE* MODCONF =fopen("/data/Automatic_balancing_of_Dual_Loudspeakers.conf","r+");
-char* temp=malloc(100*sizeof(char));
-string offset;
-inline string& mycat(){
-    if(access("/data/Automatic_balancing_of_Dual_Loudspeakers.conf",F_OK)){
-        return "error";   
-    }
-    fgets(temp,100,MODCONF);
-    int i,l=i=strlen(temp);
-    while(temp[i--]!='=' || i){}
-    i+=2;
-    if(i>=(l-1)){
-        return NULL;
-    }
-    l=0;
-    while(temp[i]){
-        offest[l]=temp[i];
-        ++l;
-        ++i;
-    }
-    return offset;
-    //已完整，待测试
-}
-check
-int main(){
-    char* MODDIR=realpath("./",MODDIR);
-    while(true){
-        if(mycat()==NULL) continue;
-        
-        //printf("%s\n",MODDIR);
-    }
-}
-/*
-function mycat(){
-    echo $(awk -F"$1" '{print $2}' "$MODCONF")
-}
-function check() { 
-     dumplog=$(dumpsys audio | grep "Devices:") 
-  
-     dev=("bt_a2dp" 
-     "headphone" 
-     "headset" 
-     "usb_headset" 
-     "bt_a2dp_hp" 
-     "bt_sco_hs" 
-     "remote_submix" 
-     "ble_headset") 
-  
-     ep=("蓝牙耳机一类" 
-     "有线耳机一类" 
-     "有线耳机二类" 
-     "USB耳机" 
-     "蓝牙耳机二类" 
-     "蓝牙耳机三类" 
-     "远程音频" 
-     "蓝牙耳机四类(LC3)") 
-  
-     for i in "${!dev[@]}"; do 
-         if echo "$dumplog" | grep -i "Devices: ${dev[i]}" >/dev/null; then 
-             echo "${ep[i]}已连接" 
-             return 0 
-         else 
-             echo "${ep[i]}未连接" 
-         fi 
-     done 
-  
-      return 1 
-  }
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cstdlib>
+#include <unistd.h>
+#include <sys/stat.h>
+const std::string MODNAME = "Automatic_balancing_of_Dual_Loudspeakers";
+const std::string MODCONF = "/data/" + MODNAME + ".conf";
 
-temp=0.0
-MODNAME="Automatic_balancing_of_Dual_Loudspeakers"
-MODCONF="/data/${MODNAME}.conf"
-if [ -f ${MODCONF} ];then
-volume_offset=$(mycat "volume_offset=")
-else volume_offset=0.0
-fi
+void writeLog(const std::string& message) {
+    std::ofstream logFile("./log.txt", std::ios::app);
+    if (logFile.is_open()) {
+        logFile << message << std::endl;
+        logFile.close();
+    }
+}
 
-while true;
-do
-    check
-    if [ $? == 0 ]; then
-        settings put system master_balance 0.0
-    elif [ $? == 1 ]; then
-        temp=$(settings get system master_balance)
-        if [ $temp != 0.0 ]; then
-            volume_offset=$temp
-        else
-            volume_offset=$(mycat "volume_offset=")
-        fi
-        echo "volume_offset="$volume_offset > ${MODCONF}
-        settings put system master_balance $volume_offset
-    fi
-    echo "Now the volume_offset = "$(settings get system master_balance)
-    sleep 3
-done
-*/
+std::string readConfigValue(const std::string& key) {
+    std::ifstream configFile(MODCONF);
+    std::string line;
+    while (std::getline(configFile, line)) {
+        size_t pos = line.find(key);
+        if (pos != std::string::npos) {
+            return line.substr(pos + key.length());
+        }
+    }
+    return "0.0";
+}
+
+bool checkAudioDevice() {
+    FILE* pipe = popen("dumpsys audio", "r");
+    if (!pipe) return false;
+
+    char buffer[128];
+    std::string result = "";
+    while (!feof(pipe)) {
+        if (fgets(buffer, 128, pipe) != NULL)
+            result += buffer;
+    }
+    pclose(pipe);
+
+    std::string devices[] = {
+        "bt_a2dp", "headphone", "headset", "usb_headset",
+        "bt_a2dp_hp", "bt_sco_hs", "remote_submix", "ble_headset"
+    };
+
+    for (const auto& device : devices) {
+        if (result.find("Devices: " + device) != std::string::npos) {
+            std::cout<<"Devices:"<<device<<std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    while (access("/sdcard/Android", F_OK) != 0) {
+        sleep(1);
+    }
+    writeLog("启动");
+
+    if (access(MODCONF.c_str(), F_OK) != 0) {
+        std::ofstream configFile(MODCONF);
+        configFile << "volume_offset=0.0" << std::endl;
+        configFile.close();
+        chmod(MODCONF.c_str(), 0755);
+    }
+
+    chmod(".", 0755);
+
+    float volume_offset = std::stof(readConfigValue("volume_offset="));
+    float temp = 0.0;
+    float vol = 0.0;
+
+    while (true) {
+        if (checkAudioDevice()) {
+            system("setenforce 0");
+            system(("settings put system master_balance " + std::to_string(vol)).c_str());
+        } else {
+            system("setenforce 0");
+            FILE* pipe = popen("settings get system master_balance", "r");
+            if (pipe) {
+                char buffer[128];
+                if (fgets(buffer, 128, pipe) != NULL) {
+                    temp = std::stof(buffer);
+                }
+                pclose(pipe);
+            }
+
+            if (temp != vol) {
+                volume_offset = temp;
+            } else {
+                volume_offset = std::stof(readConfigValue("volume_offset="));
+            }
+
+            std::ofstream configFile(MODCONF);
+            configFile << "volume_offset=" << volume_offset << std::endl;
+            configFile.close();
+
+            system(("settings put system master_balance " + std::to_string(volume_offset)).c_str());
+            std::cout << "Now the volume_offset = " << volume_offset << std::endl;
+        }
+        system("setenforce 1");
+        sleep(5);
+    }
+
+    return 0;
+}
