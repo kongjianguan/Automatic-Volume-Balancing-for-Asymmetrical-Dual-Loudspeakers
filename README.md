@@ -49,5 +49,3 @@ echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 1.无需手动，可以被busybox正常启动
 
 2.开销更低
-
-由于实现尚不完善，因此不发布release，想使用cpp实现的，可自行下载。
