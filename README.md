@@ -38,7 +38,7 @@ echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 
 # 悲报
 
-目前发现Magsik和kernelSU的busybox不支持某些语法(想知道的自己测试)，一律手动启动吧。至于如何手动，想必读者读到这里已心中有数，我也不一一赘述了。不会的就期待有缘人pull吧(●￣(ｴ)￣●)。
+目前发现Magsik和kernelSU的busybox不支持某些shell语法(想知道的自己测试)，一律手动启动吧。至于如何手动，想必读者读到这里已心中有数，我也不一一赘述了。不会的就期待有缘人pull吧(●￣(ｴ)￣●)。或者使用以cpp重写的版本
 
 # 展望
 
@@ -49,3 +49,7 @@ echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 1.无需手动，可以被busybox正常启动
 
 2.开销更低
+
+# 备注
+
+记得把二进制文件的权限改为755
