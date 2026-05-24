@@ -26,7 +26,7 @@ sh /data/adb/modules/Automatic_balancing_of_Dual_Loudspeakers/service.sh > /dev/
 终端输入
 ```
 su
-echo $(cat/data/Automatic_balancing_of_Dual_Loudspeakers.conf)
+echo $(cat /data/Automatic_balancing_of_Dual_Loudspeakers.conf)
 ```
 若无值则未读取到偏移值，可能原因为
 1. setlinux限制无法读取
